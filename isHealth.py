@@ -4,10 +4,11 @@ version:
 Author: A1ertx5s
 Date: 2022-01-24 17:47:08
 LastEditors: sA1ertx5s
-LastEditTime: 2022-02-03 00:50:05
+LastEditTime: 2022-03-20 11:10:12
 '''
 
 from gc import collect
+from glob import escape
 import requests
 import json
 import io
@@ -119,6 +120,7 @@ class DailyCP:
         url = "https://{host}/wec-counselor-collector-apps/stu/collector/queryCollectorProcessingList".format(host=self.host)
         ret = self.session.post(url, data=json.dumps(body))
         ret = self.session.post(url, data=json.dumps(body))
+        print(ret.text)
         ret = json.loads(ret.text)
         return ret["datas"]["rows"]
 
@@ -238,13 +240,16 @@ class DailyCP:
             # 获取表单
             form = self.getCollectorFormFiled(item["formWid"], item["wid"])
             # 表单存储地址
-            formpath = "{dbpath}/test.json".format(dbpath=dbpath)
+            # formpath = "{dbpath}/test.json".format(dbpath=dbpath)
             self.fillForm(form)
-            if not os.path.exists(formpath):
-                with open(formpath, "wb") as file:
-                    file.write(json.dumps(
-                        form, ensure_ascii=False).encode("utf-8"))
-            flag = self.submitCollectorForm(item["formWid"], item["wid"], "", form, address, item["instanceWid"])
+            # if not os.path.exists(formpath):
+            #     with open(formpath, "wb") as file:
+            #         file.write(json.dumps(
+            #             form, ensure_ascii=False).encode("utf-8"))
+            try:
+                flag = self.submitCollectorForm(item["formWid"], item["wid"], "", form, address, item["instanceWid"])
+            except:
+                flag = False
             if flag == True:
                 print("+"*30 + "打卡成功!!" + "+"*30)
         return flag
@@ -285,7 +290,7 @@ class DailyCP:
 if __name__ == "__main__":
     users = [
     {
-        "username": "1925104045",
+        "username": "19251040xx",
         "lon": "118.899015",
         "lat": "25.136278",
         "signVersion": "first_v3",
